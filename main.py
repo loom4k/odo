@@ -2,10 +2,13 @@ import tkinter as tk
 
 # Create a Tkinter window
 root = tk.Tk()
+root.attributes('-fullscreen', True)
 
 # Create the left frame to hold the labels and text inputs
 left_frame = tk.Frame(root, bg="white", width=300, height=root.winfo_screenheight())
 left_frame.pack(side="left", fill="both", expand=True)
+
+root.update_idletasks()
 
 # Create the labels and text inputs in the left frame
 label_names = ["Input 1", "Input 2", "Input 3", "Input 4", "Input 5", "Input 6", "Input 7", "Input 8"]
