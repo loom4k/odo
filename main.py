@@ -23,14 +23,31 @@ input_boxes = []  # list to hold the text input widgets
 selected_input = None  # variable to hold the currently selected text input
 
 def select_input(widget):
+    widget.delete(0, tk.END)
     # This function is called when a text input widget is clicked
     global selected_input
     selected_input = widget
 
+def set_placeholder(i):
+    text_input.config(fg="grey")
+    if i == 0:
+        text_input.insert(0, "Ex: 80 (cm)")
+    elif i == 1:
+        text_input.insert(0, "Ex: 200 (fps)")
+    elif i == 2:
+        text_input.insert(0, "Ex: 1.65 (m)")
+    elif i == 3:
+        text_input.insert(0, "Ex: 55658 (grains)")
+    elif i == 4:
+        text_input.insert(0, "Ex: 20 (lbs)")
+    elif i == 5:
+        text_input.insert(0, "Ex: 750 (grains)")
+
 for i in range(len(label_names)):
-    label = tk.Label(left_frame, text=label_names[i], font=("Arial", 18), padx=5, pady=5)
+    label = tk.Label(left_frame, text=label_names[i], font=("Arial", 18), padx=5, pady=5,)
     label.grid(row=i, column=0, sticky="w")
-    text_input = tk.Entry(left_frame, font=("Arial", 18))
+    text_input = tk.Entry(left_frame, font=("Arial", 18), insertontime=0, insertofftime=500)
+    set_placeholder(i)
     text_input.grid(row=i, column=1, padx=5, pady=5)
     input_boxes.append(text_input)
     text_input.bind("<Button-1>", lambda event, widget=text_input: select_input(widget))
