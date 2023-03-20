@@ -12,11 +12,11 @@ root.update_idletasks()
 
 # Create the labels and text inputs in the left frame
 label_names = [
-    "Largeur de la cible (cm)", 
-    "IBO (fps)", 
-    "Distance de flexion (m)", 
-    "Poids supp. sur la corde (grains)", 
-    "Force de tension (livres)", 
+    "Largeur de la cible", 
+    "IBO", 
+    "Distance de flexion", 
+    "Poids supp. sur la corde", 
+    "Force de tension", 
     "Poids de la fleche", 
 ]
 input_boxes = []  # list to hold the text input widgets
