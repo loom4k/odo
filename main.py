@@ -54,11 +54,11 @@ for i in range(len(label_names)):
 
 # Create the submit button
 submit_button = tk.Button(left_frame, text="Submit", font=("Arial", 18), command=lambda: submit_inputs())
-submit_button.grid(row=len(label_names)+2, column=0, pady=10, padx=35)
+submit_button.grid(row=len(label_names)+2, column=1, pady=10, padx=35)
 
 # Create an exit button
 exit_button = tk.Button(left_frame, text="Exit", font=("Arial", 18), command=root.quit)
-exit_button.grid(row=len(label_names)+2, column=1, pady=10)
+exit_button.grid(row=len(label_names)+2, column=0, pady=10)
 
 # Create the right frame to hold the number pad and submit button
 right_frame = tk.Frame(root, bg="white", width=300, height=root.winfo_screenheight())
