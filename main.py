@@ -44,7 +44,7 @@ def set_placeholder(i):
         text_input.insert(0, "Ex: 750 (grains)")
 
 for i in range(len(label_names)):
-    label = tk.Label(left_frame, text=label_names[i], font=("Arial", 18), padx=5, pady=15, bg="white")
+    label = tk.Label(left_frame, text=label_names[i], font=("Arial", 18), padx=5, pady=10, bg="white")
     label.grid(row=i, column=0, sticky="w")
     text_input = tk.Entry(left_frame, font=("Arial", 18), insertontime=0, insertofftime=500)
     set_placeholder(i)
