@@ -77,7 +77,7 @@ for i in range(1, 10):
 
 # Create a dot button
 button_dot = tk.Button(right_frame, text=".", font=("Arial", 28), command=lambda: button_click("."))
-button_dot.grid(row=3, column=0, padx=10, pady=10, sticky="nsew")
+button_dot.grid(row=3, column=0, padx=15, pady=10, sticky="nsew")
 
 # Create a button for zero
 button_zero = tk.Button(right_frame, text="0", font=("Arial", 28), command=lambda: button_click(0))
