@@ -89,7 +89,7 @@ button_delete.grid(row=3, column=2, padx=10, pady=10, sticky="nsew")
 
 # Create a button to clear all the text inputs
 button_clear = tk.Button(right_frame, text="Clear", font=("Arial", 18), command=lambda: [widget.delete(0, tk.END) for widget in input_boxes])
-button_clear.grid(row=4, column=1, pady=20)
+button_clear.grid(row=4, column=1, pady=50)
 
 def submit_inputs():
     # Get the values from the text input widgets and print them
