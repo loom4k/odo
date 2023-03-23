@@ -73,14 +73,13 @@ for i in range(len(button_list)):
     button = tk.Button(bottom_frame, text=button_list[i], width=5, height=2)
     button.grid(row=i//3, column=i%3)
 
-# Create the submit button
-submit_button = tk.Button(top_frame, text="Submit", font=("Arial", 18), command=lambda: submit_inputs())
-submit_button.grid(row=len(label_names)+2, column=1, pady=10, padx=35)
-
 # Create an exit button
-exit_button = tk.Button(top_frame, text="Exit", font=("Arial", 18), command=root.quit)
-exit_button.grid(row=len(label_names)+2, column=0, pady=10)
+exit_button = tk.Button(margin_frame, text="Exit", font=("Arial", 18), command=root.quit)
+exit_button.pack(side=tk.RIGHT, padx=10, pady=5, anchor=tk.CENTER)
 
+# Create the submit button
+submit_button = tk.Button(margin_frame, text="Submit", font=("Arial", 18), command=lambda: submit_inputs())
+submit_button.pack(side=tk.LEFT, padx=10, pady=5, anchor=tk.CENTER)
 
 def submit_inputs():
     # Get the values from the text input widgets and print them
