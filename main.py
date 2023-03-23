@@ -70,7 +70,7 @@ button_list = [
 
 # Create and place the buttons in the bottom frame
 for i in range(len(button_list)):
-    button = tk.Button(bottom_frame, text=button_list[i], width=5, height=(9/3))
+    button = tk.Button(bottom_frame, text=button_list[i], width=5, height=3)
     button.grid(row=i//3, column=i%3, padx=5, pady=5, sticky="NSEW")
     
 # Add the following code to center the frame
