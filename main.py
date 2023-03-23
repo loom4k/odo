@@ -9,7 +9,7 @@ root.attributes('-fullscreen', True)
 top_frame = tk.Frame(root, bg='white', height=root.winfo_screenheight()//2, )
 top_frame.pack(side=tk.TOP, fill=tk.BOTH)
 
-margin_frame = tk.Frame(root, bg='white', height=20)
+margin_frame = tk.Frame(root, bg='white', height=150)
 margin_frame.pack(side=tk.TOP, fill=tk.BOTH)
 
 # Create a frame for the bottom section (white)
@@ -81,11 +81,11 @@ for j in range(3):
 
 # Create an exit button
 exit_button = tk.Button(margin_frame, text="Exit", font=("Arial", 18), command=root.quit)
-exit_button.pack(side=tk.RIGHT, padx=75, pady=5, anchor=tk.CENTER)
+exit_button.pack(side=tk.RIGHT, padx=75, pady=25, anchor=tk.CENTER)
 
 # Create the submit button
 submit_button = tk.Button(margin_frame, text="Submit", font=("Arial", 18), command=lambda: submit_inputs())
-submit_button.pack(side=tk.LEFT, padx=75, pady=5, anchor=tk.CENTER)
+submit_button.pack(side=tk.LEFT, padx=75, pady=25, anchor=tk.CENTER)
 
 def submit_inputs():
     # Get the values from the text input widgets and print them
