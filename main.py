@@ -62,15 +62,15 @@ for i in range(len(label_names)):
 
 # Create the buttons for the number pad
 button_list = [
-    '7', '8', '9',
-    '4', '5', '6',
     '1', '2', '3',
-    '0', '.', 'C'
+    '4', '5', '6',
+    '7', '8', '9',
+    '.', '0', 'C'
 ]
 
 # Create and place the buttons in the bottom frame
 for i in range(len(button_list)):
-    button = tk.Button(bottom_frame, text=button_list[i], width=5, height=3)
+    button = tk.Button(bottom_frame, text=button_list[i], width=5, height=3, command=lambda num=i: button_click(num))
     button.grid(row=i//3, column=i%3, padx=5, pady=5, sticky="NSEW")
     
 # Add the following code to center the frame
@@ -91,5 +91,17 @@ def submit_inputs():
     # Get the values from the text input widgets and print them
     values = [widget.get() for widget in input_boxes]
     print(values)
+
+# Define a function to handle button clicks
+def button_click(number):
+    # Insert the clicked number into the currently selected text input widget
+    if number == 9:
+        selected_input.insert(tk.END, ".")
+    elif number == 10:
+        selected_input.insert(tk.END, "0")
+    elif number == 11:
+        selected_input.delete(0, tk.END)
+    elif selected_input:
+        selected_input.insert(tk.END, number + 1)
 
 root.mainloop()
