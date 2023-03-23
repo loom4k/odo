@@ -70,22 +70,22 @@ button_list = [
 
 # Create and place the buttons in the bottom frame
 for i in range(len(button_list)):
-    button = tk.Button(bottom_frame, text=button_list[i], width=5, height=2)
+    button = tk.Button(bottom_frame, text=button_list[i], width=5, height=5)
     button.grid(row=i//3, column=i%3, padx=5, pady=5, sticky="NSEW")
     
 # Add the following code to center the frame
 for j in range(3):
     bottom_frame.columnconfigure(j, weight=1)
-bottom_frame.rowconfigure(4, weight=1)
+    bottom_frame.rowconfigure(4, weight=1)
 
 
 # Create an exit button
 exit_button = tk.Button(margin_frame, text="Exit", font=("Arial", 18), command=root.quit)
-exit_button.pack(side=tk.RIGHT, padx=75, pady=5, anchor=tk.CENTER)
+exit_button.pack(side=tk.RIGHT, padx=100, pady=5, anchor=tk.CENTER)
 
 # Create the submit button
 submit_button = tk.Button(margin_frame, text="Submit", font=("Arial", 18), command=lambda: submit_inputs())
-submit_button.pack(side=tk.LEFT, padx=75, pady=5, anchor=tk.CENTER)
+submit_button.pack(side=tk.LEFT, padx=100, pady=5, anchor=tk.CENTER)
 
 def submit_inputs():
     # Get the values from the text input widgets and print them
