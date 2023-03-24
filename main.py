@@ -1,7 +1,5 @@
 import tkinter as tk
 
-from AngleOMeter import run_camera_window
-
 root = tk.Tk()
 
 # Set the window size to full screen
@@ -106,6 +104,7 @@ def submit_inputs():
     values = [widget.get() for widget in input_boxes]
     print(values)
     root.quit()
+    from AngleOMeter import run_camera_window
     run_camera_window()
 
 root.mainloop()
