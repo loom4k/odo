@@ -103,7 +103,6 @@ def submit_inputs():
     # Get the values from the text input widgets and print them
     values = [widget.get() for widget in input_boxes]
     print(values)
-    root.quit()
     from AngleOMeter import run_camera_window
     run_camera_window()
 
