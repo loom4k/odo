@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from AngleOMeter import angleX
+
 root = tk.Tk()
 
 # Set the window size to full screen
@@ -86,6 +88,10 @@ exit_button.pack(side=tk.RIGHT, padx=75, pady=50, anchor=tk.CENTER)
 # Create the submit button
 submit_button = tk.Button(margin_frame, text="Submit", font=("Arial", 18), command=lambda: submit_inputs())
 submit_button.pack(side=tk.LEFT, padx=75, pady=50, anchor=tk.CENTER)
+
+# Create a label to display angleX
+angleX_label = tk.Label(margin_frame, text="AngleX: ", font=("Arial", 18), padx=5, pady=(25/2), bg="white")
+angleX_label.pack(side=tk.LEFT, padx=75, pady=50, anchor=tk.CENTER)
 
 def submit_inputs():
     # Get the values from the text input widgets and print them
