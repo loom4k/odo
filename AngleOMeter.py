@@ -64,6 +64,9 @@ def read_raw_data(addr):
                 value = value - 65536
         return value
 
+def run_camera_window():
+	print(gyroX)
+
 
 bus = smbus.SMBus(1) 	# or bus = smbus.SMBus(0) for older version boards
 DeviceAddress = 0x68   # MPU6050 device address
@@ -94,7 +97,11 @@ compAngleY = pitch;
 
 timer = time.time()
 flag = 0
-def getAngle():
+while True:
+	if(flag >100): #Problem with the connection
+		print("There is a problem with the connection")
+		flag=0
+		continue
 	try:
 	    #Read Accelerometer raw value
 		accX = read_raw_data(ACCEL_XOUT_H)
@@ -158,10 +165,9 @@ def getAngle():
 		if ((gyroYAngle < -180) or (gyroYAngle > 180)):
 			gyroYAngle = kalAngleY
 
-		return str(kalAngleX)
 		#print("Angle X: " + str(kalAngleX)+"   " +"Angle Y: " + str(kalAngleY))
 	    #print(str(roll)+"  "+str(gyroXAngle)+"  "+str(compAngleX)+"  "+str(kalAngleX)+"  "+str(pitch)+"  "+str(gyroYAngle)+"  "+str(compAngleY)+"  "+str(kalAngleY))
-		time.sleep(1)
+		time.sleep()
 
 	except Exception as exc:
 		flag += 1

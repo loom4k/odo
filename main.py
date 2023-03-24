@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from AngleOMeter import getAngle
+from AngleOMeter import run_camera_window
 
 root = tk.Tk()
 
@@ -89,20 +89,6 @@ exit_button.pack(side=tk.RIGHT, padx=75, pady=50, anchor=tk.CENTER)
 submit_button = tk.Button(margin_frame, text="Submit", font=("Arial", 18), command=lambda: submit_inputs())
 submit_button.pack(side=tk.LEFT, padx=75, pady=50, anchor=tk.CENTER)
 
-# Create a label to display angleX
-angleX_label = tk.Label(margin_frame, text=("AngleX: "), font=("Arial", 18), padx=5, pady=(25/2), bg="white")
-
-def on_after():
-    angleX_label.configure(text="AngleX: " + str(getAngle()))
-
-angleX_label.pack(side=tk.LEFT, padx=75, pady=50, anchor=tk.CENTER)
-angleX_label.after(1000, on_after)
-
-def submit_inputs():
-    # Get the values from the text input widgets and print them
-    values = [widget.get() for widget in input_boxes]
-    print(values)
-
 # Define a function to handle button clicks
 def button_click(number):
     # Insert the clicked number into the currently selected text input widget
@@ -114,5 +100,12 @@ def button_click(number):
         selected_input.delete(0, tk.END)
     elif selected_input:
         selected_input.insert(tk.END, number + 1)
+
+def submit_inputs():
+    # Get the values from the text input widgets and print them
+    values = [widget.get() for widget in input_boxes]
+    print(values)
+    root.quit()
+    run_camera_window()
 
 root.mainloop()
