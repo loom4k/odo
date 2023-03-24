@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from AngleOMeter import angleX
+from AngleOMeter import getAngle
 
 root = tk.Tk()
 
@@ -90,8 +90,13 @@ submit_button = tk.Button(margin_frame, text="Submit", font=("Arial", 18), comma
 submit_button.pack(side=tk.LEFT, padx=75, pady=50, anchor=tk.CENTER)
 
 # Create a label to display angleX
-angleX_label = tk.Label(margin_frame, text="AngleX: ", font=("Arial", 18), padx=5, pady=(25/2), bg="white")
+angleX_label = tk.Label(margin_frame, text=("AngleX: "), font=("Arial", 18), padx=5, pady=(25/2), bg="white")
+
+def on_after():
+    angleX_label.configure(text="AngleX: " + str(getAngle()))
+
 angleX_label.pack(side=tk.LEFT, padx=75, pady=50, anchor=tk.CENTER)
+angleX_label.after(1000, on_after)
 
 def submit_inputs():
     # Get the values from the text input widgets and print them
