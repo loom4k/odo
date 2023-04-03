@@ -1,58 +1,65 @@
 import cv2
-import tkinter as tk
-from PIL import ImageTk, Image
 
-# Initialize camera
-cap = cv2.VideoCapture(0)
+color = (0, 0, 0) # Define the color of the lines
+thickness = 2 # Define the thickness of the lines
+line_distance = 50 # Initialize the line distance
+cap = cv2.VideoCapture(0) # Initialize the camera capture
 
-# Initialize Tkinter window
-root = tk.Tk()
-root.attributes('-fullscreen', True)
-root.title("Camera")
+# Variables for formula of the equation
+b = 0 # Distance of the bow from the ground
 
-# Create canvas for camera feed
-canvas = tk.Canvas(root)
-canvas.pack(fill=tk.BOTH, expand=True)
+# Check if the camera is opened successfully
+if not cap.isOpened():
+    print("Unable to open camera")
+    exit()
 
-def update_frame():
-    # Read frame from camera
+# Create the window and set its properties
+cv2.namedWindow('Camera', cv2.WINDOW_NORMAL)
+cv2.setWindowProperty('Camera', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+
+while True:
+    # Capture frame-by-frame
     ret, frame = cap.read()
 
-    # Convert frame from OpenCV's BGR format to RGB format for display in Tkinter
-    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    # Check if the frame was successfully captured
+    if not ret:
+        print("Unable to capture frame")
+        break
 
-    # Resize frame to fit canvas
-    canvas_width = canvas.winfo_width()
-    canvas_height = canvas.winfo_height()
-    resized_frame = cv2.resize(rgb_frame, (canvas_width, canvas_height))
+    # Rotate the frame by 90 degrees clockwise
+    frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
 
-    # Convert resized frame to PIL format for display in Tkinter
-    image = Image.fromarray(resized_frame)
+    # Get the height and width of the rotated frame
+    height, width = frame.shape[:2]
 
-    # Convert PIL image to Tkinter-compatible format and display on canvas
-    canvas.image = ImageTk.PhotoImage(image)
-    canvas.create_image(0, 0, anchor=tk.NW, image=canvas.image)
+    # Define the position of the center line
+    center_x = width // 2
+    center_y = height // 2
 
-    # Call update_frame() function again after 10 milliseconds
-    root.after(10, update_frame)
+    # Define the position of the lines with the adjusted distance
+    left_x = center_x - line_distance
+    right_x = center_x + line_distance
+    line_y = height // 4
 
-# Call update_frame() function to start updating camera feed
-update_frame()
+    # Draw the lines on top of the frame with the adjusted distance
+    cv2.line(frame, (left_x, line_y), (left_x, height - line_y), color, thickness)
+    cv2.line(frame, (right_x, line_y), (right_x, height - line_y), color, thickness)
 
-# Add two vertical lines in the middle of the screen
-canvas.create_line(canvas.winfo_width()//2, 0, canvas.winfo_width()//2, canvas.winfo_height(), fill='black')
-canvas.create_line(canvas.winfo_width()//2 + 1, 0, canvas.winfo_width()//2 + 1, canvas.winfo_height(), fill='black')
+    # Display the resulting frame only if the window is still open
+    if cv2.getWindowProperty('Camera', cv2.WND_PROP_VISIBLE) > 0:
+        cv2.imshow('Camera', frame)
 
-# Add two vertical lines in the middle of the screen
-line1 = canvas.create_line(canvas.winfo_width()//2, 0, canvas.winfo_width()//2, canvas.winfo_height(), fill='white')
-line2 = canvas.create_line(canvas.winfo_width()//2 + 1, 0, canvas.winfo_width()//2 + 1, canvas.winfo_height(), fill='white')
+    # Check for keyboard input
+    key = cv2.waitKeyEx(1)
+    if key == ord('q'):
+        break
+    elif key == ord('a'):  # Left arrow key
+        line_distance = max(line_distance - 5, 0)  # Decrease line distance by 5, but allow it to be 0
+    elif key == ord('d'):  # Right arrow key
+        line_distance += 5  # Increase line distance by 5
+    elif key == ord(' '):  # Space key
+        print("Distance between lines:", abs(left_x - right_x))
 
-# Bring lines to the front
-canvas.tag_raise(line1)
-canvas.tag_raise(line2)
-
-# Start Tkinter event loop
-root.mainloop()
-
-# Release camera
+# Release the capture and close the window
 cap.release()
+cv2.destroyAllWindows()
