@@ -1,5 +1,4 @@
 import cv2
-import numpy as np
 
 # Open video capture device
 cap = cv2.VideoCapture(0)
@@ -11,6 +10,9 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 while True:
     # Capture a frame
     ret, frame = cap.read()
+
+    # Flip the frame horizontally
+    frame = cv2.flip(frame, 1)
 
     # Display the frame
     cv2.imshow('frame', frame)
