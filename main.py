@@ -25,6 +25,8 @@ x2 = int(x1 + line_width)
 while True:
     # Capture a frame
     ret, frame = cap.read()
+    if not ret:
+        continue
 
     # Draw the circle
     cv2.circle(frame, (circle_position[0], circle_position[1]), circle_radius, circle_color, circle_thickness)
