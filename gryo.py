@@ -104,7 +104,7 @@ class Application(tk.Frame):
         # Define line parameters
         self.y1 = 240 - 10
         self.y2 = 240 + 10
-        line_width = cap.get(cv2.CAP_PROP_FRAME_WIDTH) // 3
+        line_width = cap.get(cv2.CAP_PROP_FRAME_WIDTH) // 5
         x1 = int((cap.get(cv2.CAP_PROP_FRAME_WIDTH) - line_width) // 2)
         x2 = int(x1 + line_width)
         self.multiplier = 0
