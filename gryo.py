@@ -1,99 +1,180 @@
-import math
-import smbus2
-import time
+import random
+import tkinter as tk
+import cv2
+import PIL.Image, PIL.ImageTk
 
-# MPU6050 Registers and Addresses
-DEVICE_ADDRESS = 0x68
-PWR_MGMT_1 = 0x6B
-SMPLRT_DIV = 0x19
-CONFIG = 0x1A
-GYRO_CONFIG = 0x1B
-INT_ENABLE = 0x38
-ACCEL_XOUT = 0x3B
-ACCEL_YOUT = 0x3D
-ACCEL_ZOUT = 0x3F
-TEMP_OUT = 0x41
-GYRO_XOUT = 0x43
-GYRO_YOUT = 0x45
-GYRO_ZOUT = 0x47
+class Application(tk.Frame):
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.master = master
+        self.pack()
 
-# Initialize the I2C bus
-bus = smbus2.SMBus(1)
+        # create input fields and labels
+        self.create_input_fields()
 
-# Power on the MPU6050
-bus.write_byte_data(DEVICE_ADDRESS, PWR_MGMT_1, 0)
+        # create number pad
+        self.create_number_pad()
 
-# Set the sample rate
-bus.write_byte_data(DEVICE_ADDRESS, SMPLRT_DIV, 7)
+    def create_input_fields(self):
+        self.input_fields = []
+        self.labels = []
 
-# Set the low pass filter
-bus.write_byte_data(DEVICE_ADDRESS, CONFIG, 0)
+        for i in range(8):
+            label = tk.Label(self, text=f"Input Field {i+1}")
+            label.grid(row=i, column=0, padx=5, pady=5)
+            self.labels.append(label)
 
-# Set the gyro range
-bus.write_byte_data(DEVICE_ADDRESS, GYRO_CONFIG, 0)
+            input_field = tk.Entry(self)
+            input_field.grid(row=i, column=1, padx=5, pady=5)
+            self.input_fields.append(input_field)
 
-# Enable data ready interrupt
-bus.write_byte_data(DEVICE_ADDRESS, INT_ENABLE, 1)
+    def create_number_pad(self):
+        self.number_pad = tk.Frame(self)
+        self.number_pad.grid(row=0, column=2, rowspan=8, padx=5, pady=5)
 
-# Define the complementary filter coefficients
-alpha = 0.98
-beta = 1 - alpha
+        # create number buttons
+        for i in range(9):
+            button = tk.Button(self.number_pad, text=str(i+1), width=5, height=2, command=lambda num=i+1: self.insert_number(num))
+            button.grid(row=i//3, column=i%3, padx=5, pady=5)
 
-# Define the initial angles
-angle_x = 0
-angle_y = 0
+        # create zero button
+        button_zero = tk.Button(self.number_pad, text="0", width=5, height=2, command=lambda num=0: self.insert_number(num))
+        button_zero.grid(row=3, column=1, padx=5, pady=5)
 
-# Define the initial gyro readings
-gyro_x_prev = 0
-gyro_y_prev = 0
-gyro_z_prev = 0
+        # create clear, submit, and delete buttons
+        button_clear = tk.Button(self.number_pad, text="C", width=5, height=2, command=self.clear_input_fields)
+        button_clear.grid(row=4, column=0, padx=5, pady=5)
 
-# Define the time variables
-t_prev = time.time()
-dt = 0
+        button_submit = tk.Button(self.number_pad, text="Submit", width=5, height=2, command=self.submit)
+        button_submit.grid(row=4, column=1, padx=5, pady=5)
 
-while True:
-    # Read the accelerometer and gyroscope values
-    accel_x = bus.read_byte_data(DEVICE_ADDRESS, ACCEL_XOUT)
-    accel_y = bus.read_byte_data(DEVICE_ADDRESS, ACCEL_YOUT)
-    accel_z = bus.read_byte_data(DEVICE_ADDRESS, ACCEL_ZOUT)
-    gyro_x = bus.read_byte_data(DEVICE_ADDRESS, GYRO_XOUT)
-    gyro_y = bus.read_byte_data(DEVICE_ADDRESS, GYRO_YOUT)
-    gyro_z = bus.read_byte_data(DEVICE_ADDRESS, GYRO_ZOUT)
+        button_delete = tk.Button(self.number_pad, text="DEL", width=5, height=2, command=self.delete_from_input_field)
+        button_delete.grid(row=4, column=2, padx=5, pady=5)
 
-    # Calculate the accelerometer angles
-    accel_x_angle = math.degrees(math.atan2(accel_y, accel_z))
-    accel_y_angle = math.degrees(math.atan2(accel_x, accel_z))
+    def insert_number(self, num):
+        # find which input field has focus
+        focus_index = None
+        for i in range(8):
+            if self.input_fields[i] == self.master.focus_get():
+                focus_index = i
+                break
 
-    # Calculate the gyro angles
-    t_now = time.time()
-    dt = t_now - t_prev
-    t_prev = t_now
+        # insert number into focused input field
+        if focus_index is not None:
+            current_text = self.input_fields[focus_index].get()
+            self.input_fields[focus_index].delete(0, tk.END)
+            self.input_fields[focus_index].insert(0, current_text + str(num))
 
-    gyro_x_rate = gyro_x / 131.0
-    gyro_y_rate = gyro_y / 131.0
-    gyro_z_rate = gyro_z / 131.0
+    def clear_input_fields(self):
+        # clear all input fields
+        for i in range(8):
+            self.input_fields[i].delete(0, tk.END)
 
-    gyro_x_angle = gyro_x_rate * dt + gyro_x_prev
-    gyro_y_angle = gyro_y_rate * dt + gyro_y_prev
-    gyro_z_angle = gyro_z_rate * dt + gyro_z_prev
+    def delete_from_input_field(self):
+        # find which input field has focus
+        focus_index = None
+        for i in range(8):
+            if self.input_fields[i] == self.master.focus_get():
+                focus_index = i
+                break
 
-    gyro_x_prev = gyro_x_angle
-    gyro_y_prev = gyro_y_angle
-    gyro_z_prev = gyro_z_angle
+        # delete last character from focused input field
+        if focus_index is not None:
+            current_text = self.input_fields[focus_index].get()
+            if len(current_text) > 0:
+                self.input_fields[focus_index].delete(len(current_text) - 1)
 
-    # Calculate the complementary filter angles
-    angle_x = alpha * (angle_x + gyro_x_angle) + beta * accel_x_angle
-    angle_y = alpha * (angle_y + gyro_y_angle) + beta * accel_y_angle
+    def submit(self):
+        # create new window
+        top = tk.Toplevel(self)
+        top.title("Camera Feed")
 
-    # Calculate the final angle
-    angle = math.sqrt(angle_x**2 + angle_y**2)
+        # create video capture object
+        cap = cv2.VideoCapture(0)
 
-    # Convert the angle to a value between 1 and 360 degrees
-    angle_degrees = angle if angle >= 0 else angle + 360
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-    # Print the angle value
-    print("Angle: ", angle_degrees)
+        # Define circle parameters
+        circle_color = (0, 0, 255)  # Red color
+        circle_radius = 10
+        circle_thickness = -1  # Filled circle
+        self.circle_position = [320, 240]  # Start at the center of the screen
 
-    # Wait for a short period of time before reading again
-    time.sleep(0.01)
+        # Define line parameters
+        self.y1 = cap.get(cv2.CAP_PROP_FRAME_HEIGHT) // 2 - 50
+        self.y2 = cap.get(cv2.CAP_PROP_FRAME_HEIGHT) // 2 + 50
+        line_width = cap.get(cv2.CAP_PROP_FRAME_WIDTH) // 3
+        x1 = int((cap.get(cv2.CAP_PROP_FRAME_WIDTH) - line_width) // 2)
+        x2 = int(x1 + line_width)
+        self.multiplier = 0
+
+        # define function to increase vertical distance between lines
+        def increase_line_distance():
+            self.y1 -= 5
+            self.y2 += 5
+            self.multiplier -= 2
+
+        def decrease_line_distance():
+            self.y1 += 5
+            self.y2 -= 5
+            self.multiplier += 2
+
+        # create canvas to display video feed
+        canvas = tk.Canvas(top, width=640, height=480)
+        canvas.pack()
+        canvas.focus_set()
+
+        # update video feed every 15 milliseconds
+        def update():
+            ret, frame = cap.read()
+            if ret:
+                canvas.bind("<KeyPress-a>", lambda event: increase_line_distance())
+                canvas.bind("<KeyPress-d>", lambda event: decrease_line_distance())
+                
+                # Draw the circle
+                cv2.circle(frame, (self.circle_position[0], self.circle_position[1]), circle_radius, circle_color, circle_thickness)
+
+                # Move the circle randomly on the x-axis
+                self.circle_position[0] += random.randint(-2, 2)
+                self.circle_position[0] = max(self.circle_position[0], circle_radius)
+                self.circle_position[0] = min(self.circle_position[0], frame.shape[1] - circle_radius)
+
+                #self.circle_position[0] = self.circle_position self.multiplier
+
+                # Update line coordinates
+                x1 = int((frame.shape[1] - line_width) // 2)
+                x2 = int(x1 + line_width)
+
+                # Draw two horizontal lines spaced 100 pixels apart and 1/3 the width of the screen
+                cv2.line(frame, (x1, int(self.y1)), (x2, int(self.y1)), (0, 255, 0), 2)
+                cv2.line(frame, (x1, int(self.y2)), (x2, int(self.y2)), (0, 255, 0), 2)
+
+                # convert frame to PIL Image format
+                img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                img = PIL.Image.fromarray(img)
+
+                # resize image to fit canvas
+                img = img.resize((640, 480), PIL.Image.ANTIALIAS)
+
+                # display image on canvas
+                photo = PIL.ImageTk.PhotoImage(image=img)
+                canvas.create_image(0, 0, anchor=tk.NW, image=photo)
+                canvas.photo = photo
+
+            # schedule next update
+            canvas.after(15, update)
+
+        # start video feed update loop
+        update()
+
+        # set function to release video capture object when window is closed
+        def on_closing():
+            cap.release()
+            top.destroy()
+
+        top.protocol("WM_DELETE_WINDOW", on_closing)
+
+root = tk.Tk()
+app = Application(master=root)
+app.mainloop()
