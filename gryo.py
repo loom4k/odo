@@ -19,8 +19,14 @@ class Application(tk.Frame):
         self.input_fields = []
         self.labels = []
 
-        for i in range(8):
-            label = tk.Label(self, text=f"Input Field {i+1}")
+        label_names = ["Largeur de la cible", 
+                       "IBO", 
+                       "Distance de flexion", 
+                       "Poids supp. sur la corde", 
+                       "Force de tension", 
+                       "Poids de la flèche"]
+        for i in range(6):
+            label = tk.Label(self, text=label_names[i])
             label.grid(row=i, column=0, padx=5, pady=5)
             self.labels.append(label)
 
