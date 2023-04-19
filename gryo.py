@@ -108,8 +108,8 @@ class Application(tk.Frame):
         self.circle_position = [320, 240]  # Start at the center of the screen
 
         # Define line parameters
-        self.y1 = 240 - 10
-        self.y2 = 240 + 10
+        self.y1 = 240 - 25
+        self.y2 = 240 + 25
         line_width = cap.get(cv2.CAP_PROP_FRAME_WIDTH) // 5
         x1 = int((cap.get(cv2.CAP_PROP_FRAME_WIDTH) - line_width) // 2)
         x2 = int(x1 + line_width)
