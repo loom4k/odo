@@ -2,8 +2,8 @@ import RPi.GPIO as GPIO
 import time
 
 # Set up the GPIO pins for the ADC
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(7, GPIO.IN)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(26, GPIO.IN)
 
 # Define the function to read the ADC value
 def read_adc():
