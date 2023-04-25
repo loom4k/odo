@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 
 # Set up the GPIO pins for the ADC
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(7, GPIO.IN)
 
 # Define the function to read the ADC value
