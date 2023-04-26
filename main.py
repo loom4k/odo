@@ -161,8 +161,8 @@ class Application(tk.Frame):
                 self.circle_position[0] += random.randint(-2, 2)
                 
                 if self.y1 == 205:
-                    self.circle_position[0] = max(self.circle_position[0] - 10, circle_radius)
-                    self.circle_position[0] = min(self.circle_position[0] - 10, frame.shape[1] - circle_radius)
+                    self.circle_position[0] = max(self.circle_position[0], circle_radius)
+                    self.circle_position[0] = min(self.circle_position[0], frame.shape[1] - circle_radius)
 
                 #self.circle_position[0] = self.circle_position self.multiplier
 
@@ -190,6 +190,7 @@ class Application(tk.Frame):
             canvas.after(15, update)
 
         # start video feed update loop
+        self.circle_position[0] += 10
         update()
 
         # set function to release video capture object when window is closed
