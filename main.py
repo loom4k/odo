@@ -128,6 +128,10 @@ class Application(tk.Frame):
 
                 if self.y1 == 215:
                     self.circle_position[0] += 20
+                if self.y1 == 210:
+                    self.circle_position[0] += 10
+                if self.y1 >= 209:
+                    self.circle_position[0] += 50
             elif direction == "R":
                 self.y1 += 5
                 self.y2 -= 5
