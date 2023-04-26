@@ -114,8 +114,8 @@ class Application(tk.Frame):
         self.circle_position = [320, 240]  # Start at the center of the screen
 
         # Define line parameters
-        self.y1 = 240 - 25
-        self.y2 = 240 + 25
+        self.y1 = 240 - 25 # 215
+        self.y2 = 240 + 25 # 265
         line_width = cap.get(cv2.CAP_PROP_FRAME_WIDTH) // 5
         x1 = int((cap.get(cv2.CAP_PROP_FRAME_WIDTH) - line_width) // 2)
         x2 = int(x1 + line_width)
@@ -130,7 +130,6 @@ class Application(tk.Frame):
                 self.y2 -= 5
 
         e1 = Encoder(17, 18, valueChanged)
-
 
         # define function to increase vertical distance between lines
         def increase_line_distance():
@@ -160,8 +159,10 @@ class Application(tk.Frame):
 
                 # Move the circle randomly on the x-axis
                 self.circle_position[0] += random.randint(-2, 2)
-                self.circle_position[0] = max(self.circle_position[0], circle_radius)
-                self.circle_position[0] = min(self.circle_position[0], frame.shape[1] - circle_radius)
+                
+                if self.y1 == 205:
+                    self.circle_position[0] = max(self.circle_position[0] - 10, circle_radius)
+                    self.circle_position[0] = min(self.circle_position[0] - 10, frame.shape[1] - circle_radius)
 
                 #self.circle_position[0] = self.circle_position self.multiplier
 
