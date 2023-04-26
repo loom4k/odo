@@ -191,7 +191,7 @@ class Application(tk.Frame):
 
         # start video feed update loop
         if self.y1 == 205:
-            self.circle_position[0] += 10
+            self.circle_position[0] += 50
         update()
 
         # set function to release video capture object when window is closed
