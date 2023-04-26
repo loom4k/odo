@@ -125,11 +125,14 @@ class Application(tk.Frame):
             if direction == "L":
                 self.y1 -= 5
                 self.y2 += 5
-                self.circle_position[0] -= 2
+
+                if self.y1 == 215:
+                    self.circle_position[0] -= 5
             elif direction == "R":
                 self.y1 += 5
                 self.y2 -= 5
-                self.circle_position[0] += 2
+                if self.y1 == 215:
+                    self.circle_position[0] -= 5
 
         e1 = Encoder(17, 18, valueChanged)
 
