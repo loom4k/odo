@@ -135,6 +135,9 @@ class Application(tk.Frame):
                 self.y2 -= 5
 
                 self.circle_position[0] += random.randint(0, 35)
+
+            if self.y1 >= 235:
+                self.circle_position[0] = 300
         e1 = Encoder(17, 18, valueChanged)
 
         # create canvas to display video feed
