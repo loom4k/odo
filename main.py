@@ -127,6 +127,8 @@ class Application(tk.Frame):
             if direction == "L":
                 self.y1 -= 5
                 self.y2 += 5
+                print("y1: ", self.y1)
+                print("y2: ", self.y2)
 
                 self.circle_position[0] -= random.randint(0, 35)
                 self.circle_position[0] = max(self.circle_position[0], 300)       
@@ -135,6 +137,8 @@ class Application(tk.Frame):
             elif direction == "R":
                 self.y1 += 5
                 self.y2 -= 5
+                print("y1: ", self.y1)
+                print("y2: ", self.y2)
 
                 self.circle_position[0] += random.randint(0, 35)
                 if self.y2 >= 235:
