@@ -128,16 +128,12 @@ class Application(tk.Frame):
                 self.y1 -= 5
                 self.y2 += 5
 
-                if self.y1 == 205:
-                    self.circle_position[0] += 20
-                if self.y1 == 195:
-                    self.circle_position[0] += 10
-                if self.y1 <= 194:
-                    self.circle_position[0] += 50
+                self.circle_position[0] += random.randint(-15, 15)
             elif direction == "R":
                 self.y1 += 5
                 self.y2 -= 5
 
+                self.circle_position[0] -= random.randint(-15, 15)
         e1 = Encoder(17, 18, valueChanged)
 
         # create canvas to display video feed
