@@ -158,7 +158,8 @@ class Application(tk.Frame):
                 cv2.circle(frame, (self.circle_position[0], self.circle_position[1]), circle_radius, circle_color, circle_thickness)
 
                 # Move the circle randomly on the x-axis
-                #self.circle_position[0] += random.randint(-2, 2)
+                self.circle_position[0] += random.randint(-2, 2)
+                self.circle_position[0] += self.multiplier
                 
                 self.circle_position[0] = max(self.circle_position[0], circle_radius)
                 self.circle_position[0] = min(self.circle_position[0], frame.shape[1] - circle_radius)
