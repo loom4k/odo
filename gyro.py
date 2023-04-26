@@ -1,5 +1,6 @@
-import smbus
+from smbus2 import SMBus
 import time
+import math
 
 import RPi.GPIO as gpio
 
@@ -15,7 +16,7 @@ GYRO_X  = 0x43
 GYRO_Y  = 0x45
 GYRO_Z  = 0x47
 TEMP = 0x41
-bus = smbus.SMBus(1)
+bus = SMBus(1)
 
 Device_Address = 0x68   # device address
 AxCal=0
@@ -48,7 +49,7 @@ def accel():
     Ax = (x/16384.0-AxCal)
     Ay = (y/16384.0-AyCal)
     Az = (z/16384.0-AzCal)
-    print("X="+str(Ax))
+    #print("X="+str(Ax))
     #print(Ax,Ay,Az)
     time.sleep(.01)
     
@@ -62,12 +63,19 @@ def gyro():
     Gx = x/131.0 - GxCal
     Gy = y/131.0 - GyCal
     Gz = z/131.0 - GzCal
-    print("X="+str(Gx))
+    return Gx
     #print(Gx,Gy,Gz)
     time.sleep(.01)
 
 InitMPU()
 
 while True:
-    time.sleep(1)
-    gyro()
+    currentX = 0
+    newX1 = gyro()
+    newX = math.floor(newX1*10)/10
+
+    #currentX = currentX + math.floor(newX*10)/10
+    if(newX != 0.1 and newX != 0.2 and newX != -0.1 and newX != -0.2):
+       print(newX)
+    time.sleep(0.5)
+    #print("X: " + str(currentX))

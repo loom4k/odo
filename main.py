@@ -3,6 +3,12 @@ import tkinter as tk
 import cv2
 import PIL.Image, PIL.ImageTk
 
+import time
+import RPi.GPIO as GPIO
+from encoder import Encoder
+
+GPIO.setmode(GPIO.BCM)
+
 class Application(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
@@ -114,6 +120,17 @@ class Application(tk.Frame):
         x1 = int((cap.get(cv2.CAP_PROP_FRAME_WIDTH) - line_width) // 2)
         x2 = int(x1 + line_width)
         self.multiplier = 0
+
+        def valueChanged(value, direction):
+            if direction == "L":
+                self.y1 -= 5
+                self.y2 += 5
+            elif direction == "R":
+                self.y1 += 5
+                self.y2 -= 5
+
+        e1 = Encoder(17, 18, valueChanged)
+
 
         # define function to increase vertical distance between lines
         def increase_line_distance():
