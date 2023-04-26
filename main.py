@@ -121,6 +121,18 @@ class Application(tk.Frame):
         x2 = int(x1 + line_width)
         self.multiplier = 0
 
+        def valueChanged(value, direction):
+            if direction == "L":
+                self.y1 -= 5
+                self.y2 += 5
+                self.multiplier -= 2
+            elif direction == "R":
+                self.y1 += 5
+                self.y2 -= 5
+                self.multiplier += 2
+
+        e1 = Encoder(17, 18, valueChanged)
+
         # create canvas to display video feed
         canvas = tk.Canvas(top, width=640, height=480)
         canvas.pack()
@@ -130,25 +142,12 @@ class Application(tk.Frame):
         def update():
             ret, frame = cap.read()
             if ret:
-                def valueChanged(value, direction):
-                    if direction == "L":
-                        self.y1 -= 5
-                        self.y2 += 5
-                        self.circle_position += 2
-                        #action = run_once(lessY)
-                    elif direction == "R":
-                        self.y1 += 5
-                        self.y2 -= 5
-                        self.circle_position -= 2
-                        #action = run_once(moreY)
-
-                e1 = Encoder(17, 18, valueChanged)
-
                 # Draw the circle
                 cv2.circle(frame, (self.circle_position[0], self.circle_position[1]), circle_radius, circle_color, circle_thickness)
 
                 # Move the circle randomly on the x-axis
                 self.circle_position[0] += random.randint(-2, 2)
+                self.circle_position[0] += self.multiplier
                 
                 self.circle_position[0] = max(self.circle_position[0], circle_radius)
                 self.circle_position[0] = min(self.circle_position[0], frame.shape[1] - circle_radius)
