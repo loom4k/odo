@@ -125,11 +125,11 @@ class Application(tk.Frame):
             if direction == "L":
                 self.y1 -= 5
                 self.y2 += 5
-                self.multiplier -= 2
+                self.circle_position[0] -= 2
             elif direction == "R":
                 self.y1 += 5
                 self.y2 -= 5
-                self.multiplier += 2
+                self.circle_position[0] += 2
 
         e1 = Encoder(17, 18, valueChanged)
 
@@ -147,7 +147,6 @@ class Application(tk.Frame):
 
                 # Move the circle randomly on the x-axis
                 self.circle_position[0] += random.randint(-2, 2)
-                self.circle_position[0] += self.multiplier
                 
                 self.circle_position[0] = max(self.circle_position[0], circle_radius)
                 self.circle_position[0] = min(self.circle_position[0], frame.shape[1] - circle_radius)
