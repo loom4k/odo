@@ -113,7 +113,7 @@ class Application(tk.Frame):
         self.circle_color = (0, 0, 255)  # Red color
         self.circle_radius = 10
         self.circle_thickness = -1  # Filled circle
-        self.circle_position = [320, 275]  # Start at the center of the screen
+        self.circle_position = [340, 240]  # Start at the center of the screen
 
         # Define line parameters
         self.y1 = 240 - 25 # 215
