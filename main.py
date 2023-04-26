@@ -4,6 +4,8 @@ import cv2
 import PIL.Image, PIL.ImageTk
 
 import time
+
+import numpy as np
 import RPi.GPIO as GPIO
 from encoder import Encoder
 
@@ -150,10 +152,18 @@ class Application(tk.Frame):
                 # Draw the circle
                 cv2.circle(frame, (self.circle_position[0], self.circle_position[1]), circle_radius, circle_color, circle_thickness)
 
-                # Draw a semi-transparent circle
-                semi_transparent_color = (circle_color[0], circle_color[1], circle_color[2], 5) # Set alpha value to 128
-                semi_transparent_radius = circle_radius * 2
-                cv2.circle(frame, (self.circle_position[0], self.circle_position[1]), semi_transparent_radius, semi_transparent_color, circle_thickness)
+                # Create an empty alpha channel
+                alpha_channel = np.zeros(frame.shape[:2], dtype=np.uint8)
+
+                # Draw the circle on the alpha channel with lower alpha value
+                circle_center = (self.circle_position[0], self.circle_position[1])
+                circle_radius = 50
+                circle_color = (255, 0, 0)
+                circle_thickness = -1 # Fill the circle
+                cv2.circle(alpha_channel, circle_center, circle_radius*2, (255, 255, 255, 128), circle_thickness)
+
+                # Merge the alpha channel with the original frame
+                result = cv2.addWeighted(frame, 1, cv2.cvtColor(alpha_channel, cv2.COLOR_GRAY2BGR), 0.5, 0)
 
 
                 # Move the circle randomly on the x-axis
