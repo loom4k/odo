@@ -126,11 +126,11 @@ class Application(tk.Frame):
                 self.y1 -= 5
                 self.y2 += 5
 
-                if self.y1 == 215:
+                if self.y1 == 205:
                     self.circle_position[0] += 20
-                if self.y1 == 210:
+                if self.y1 == 195:
                     self.circle_position[0] += 10
-                if self.y1 >= 209:
+                if self.y1 <= 194:
                     self.circle_position[0] += 50
             elif direction == "R":
                 self.y1 += 5
@@ -149,6 +149,12 @@ class Application(tk.Frame):
             if ret:
                 # Draw the circle
                 cv2.circle(frame, (self.circle_position[0], self.circle_position[1]), circle_radius, circle_color, circle_thickness)
+
+                # Draw a semi-transparent circle
+                semi_transparent_color = (circle_color[0], circle_color[1], circle_color[2], 128) # Set alpha value to 128
+                semi_transparent_radius = circle_radius * 2
+                cv2.circle(frame, (self.circle_position[0], self.circle_position[1]), semi_transparent_radius, semi_transparent_color, circle_thickness)
+
 
                 # Move the circle randomly on the x-axis
                 self.circle_position[0] += random.randint(-2, 2)
