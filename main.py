@@ -151,7 +151,7 @@ class Application(tk.Frame):
                 cv2.circle(frame, (self.circle_position[0], self.circle_position[1]), circle_radius, circle_color, circle_thickness)
 
                 # Draw a semi-transparent circle
-                semi_transparent_color = (circle_color[0], circle_color[1], circle_color[2], 128) # Set alpha value to 128
+                semi_transparent_color = (circle_color[0], circle_color[1], circle_color[2], 5) # Set alpha value to 128
                 semi_transparent_radius = circle_radius * 2
                 cv2.circle(frame, (self.circle_position[0], self.circle_position[1]), semi_transparent_radius, semi_transparent_color, circle_thickness)
 
