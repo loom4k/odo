@@ -132,7 +132,7 @@ class Application(tk.Frame):
 
                 self.circle_position[0] -= random.randint(0, 35)
                 self.circle_position[0] = max(self.circle_position[0], 300)       
-                if self.y2 >= 235:
+                if self.y2 <= 180:
                     self.circle_position[0] = 300         
             elif direction == "R":
                 self.y1 += 5
@@ -141,7 +141,7 @@ class Application(tk.Frame):
                 print("y2: ", self.y2)
 
                 self.circle_position[0] += random.randint(0, 35)
-                if self.y2 >= 235:
+                if self.y2 <= 180:
                     self.circle_position[0] = 300
 
         e1 = Encoder(17, 18, valueChanged)
