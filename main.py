@@ -152,28 +152,10 @@ class Application(tk.Frame):
                 # Draw the circle
                 cv2.circle(frame, (self.circle_position[0], self.circle_position[1]), self.circle_radius, self.circle_color, self.circle_thickness)
 
-                # Create an empty alpha channel
-                alpha_channel = np.zeros(frame.shape[:2], dtype=np.uint8)
-
-                # Draw the circle on the alpha channel with lower alpha value
-                circle_center = (self.circle_position[0], self.circle_position[1])
-                circle_color = (255, 0, 0)
-                cv2.circle(alpha_channel, circle_center, self.circle_radius*2, (255, 255, 255, 128), self.circle_thickness)
-
-                # Merge the alpha channel with the original frame
-                result = cv2.addWeighted(frame, 1, cv2.cvtColor(alpha_channel, cv2.COLOR_GRAY2BGR), 0.5, 0)
-
                 # Move the circle randomly on the x-axis
                 self.circle_position[0] += random.randint(-2, 2)
                 self.circle_position[0] = max(self.circle_position[0], self.circle_radius)
                 self.circle_position[0] = min(self.circle_position[0], frame.shape[1] - self.circle_radius)
-
-
-                # Move the circle randomly on the x-axis
-                self.circle_position[0] += random.randint(-2, 2)
-                
-                self.circle_position[0] = max(self.circle_position[0], circle_radius)
-                self.circle_position[0] = min(self.circle_position[0], frame.shape[1] - circle_radius)
 
                 #self.circle_position[0] = self.circle_position self.multiplier
 
