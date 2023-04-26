@@ -125,22 +125,13 @@ class Application(tk.Frame):
             if direction == "L":
                 self.y1 -= 5
                 self.y2 += 5
+                self.multiplier -= 2
             elif direction == "R":
                 self.y1 += 5
                 self.y2 -= 5
+                self.multiplier += 2
 
         e1 = Encoder(17, 18, valueChanged)
-
-        # define function to increase vertical distance between lines
-        def increase_line_distance():
-            self.y1 -= 5
-            self.y2 += 5
-            self.multiplier -= 2
-
-        def decrease_line_distance():
-            self.y1 += 5
-            self.y2 -= 5
-            self.multiplier += 2
 
         # create canvas to display video feed
         canvas = tk.Canvas(top, width=640, height=480)
@@ -151,9 +142,6 @@ class Application(tk.Frame):
         def update():
             ret, frame = cap.read()
             if ret:
-                canvas.bind("<KeyPress-a>", lambda event: increase_line_distance())
-                canvas.bind("<KeyPress-d>", lambda event: decrease_line_distance())
-                
                 # Draw the circle
                 cv2.circle(frame, (self.circle_position[0], self.circle_position[1]), circle_radius, circle_color, circle_thickness)
 
