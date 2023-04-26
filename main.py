@@ -135,11 +135,13 @@ class Application(tk.Frame):
         def increase_line_distance():
             self.y1 -= 5
             self.y2 += 5
+            self.circle_position[0] += 5
             self.multiplier -= 2
 
         def decrease_line_distance():
             self.y1 += 5
             self.y2 -= 5
+            self.circle_position[0] -= 5
             self.multiplier += 2
 
         # create canvas to display video feed
@@ -190,8 +192,6 @@ class Application(tk.Frame):
             canvas.after(15, update)
 
         # start video feed update loop
-        if self.y1 == 205:
-            self.circle_position[0] += 50
         update()
 
         # set function to release video capture object when window is closed
