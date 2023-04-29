@@ -137,6 +137,8 @@ class Application(tk.Frame):
         self.circle_thickness = -1  # Filled circle
         self.circle_position = [340, 240]  # Start at the center of the screen
 
+        self.keep_position = 0
+
         # Define line parameters
         self.y1 = 240 - 25 # 215
         self.y2 = 240 + 25 # 265
@@ -294,6 +296,13 @@ class Application(tk.Frame):
 
                 if(self.kalAngleX <= -110):
                     self.circle_position[0] = 300
+
+                    if(self.circle_position[0] != 300):
+                        self.keep_position = self.circle_position[0]
+
+                elif(self.kalAngleX < -109 and self.kalAngleX > -111):
+                    self.circle_position[0] = self.keep_position
+
 
                 #self.circle_position[0] = self.circle_position self.multiplier
 
