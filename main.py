@@ -130,8 +130,7 @@ class Application(tk.Frame):
                 print("y1: ", self.y1)
                 print("y2: ", self.y2)
 
-                if self.y2 <= 250:
-                    self.circle_position[0] -= random.randint(0, 20)
+                self.circle_position[0] -= random.randint(0, 20)
                 self.circle_position[0] = max(self.circle_position[0], 300)
                 if self.y2 <= 165:
                     self.circle_position[0] = 300         
@@ -141,7 +140,8 @@ class Application(tk.Frame):
                 print("y1: ", self.y1)
                 print("y2: ", self.y2)
 
-                self.circle_position[0] += random.randint(0, 20)
+                if self.y2 <= 250:
+                    self.circle_position[0] += random.randint(0, 20)
                 if self.y2 <= 165:
                     self.circle_position[0] = 300
 
