@@ -243,7 +243,6 @@ class Application(tk.Frame):
                 gyroYRate = gyroY/131
 
                 if (self.RestrictPitch):
-
                     if((roll < -90 and self.kalAngleX >90) or (roll > 90 and self.kalAngleX < -90)):
                         self.kalmanX.setAngle(roll)
                         complAngleX = roll
@@ -282,9 +281,8 @@ class Application(tk.Frame):
                 if ((self.gyroYAngle < -180) or (self.gyroYAngle > 180)):
                     self.gyroYAngle = self.kalAngleY
 
-                print("Angle X: " + str(self.kalAngleX)+"   " +"Angle Y: " + str(self.kalAngleY))
+                #print("Angle X: " + str(self.kalAngleX)+"   " +"Angle Y: " + str(self.kalAngleY))
                 #print(str(roll)+"  "+str(self.gyroXAngle)+"  "+str(self.compAngleX)+"  "+str(self.kalAngleX)+"  "+str(pitch)+"  "+str(self.gyroYAngle)+"  "+str(self.compAngleY)+"  "+str(self.kalAngleY))
-                time.sleep(0.005)
 
                 # Draw the circle
                 cv2.circle(frame, (self.circle_position[0], self.circle_position[1]), self.circle_radius, self.circle_color, self.circle_thickness)
@@ -293,6 +291,9 @@ class Application(tk.Frame):
                 self.circle_position[0] += random.randint(-2, 2)
                 self.circle_position[0] = max(self.circle_position[0], self.circle_radius)
                 self.circle_position[0] = min(self.circle_position[0], frame.shape[1] - self.circle_radius)
+
+                if(self.kalAngleX <= -110):
+                    self.circle_position[0] = 300
 
                 #self.circle_position[0] = self.circle_position self.multiplier
 
