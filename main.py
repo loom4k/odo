@@ -2,10 +2,8 @@ import random
 import tkinter as tk
 import cv2
 import PIL.Image, PIL.ImageTk
-from Kalman import KalmanAngle
-import smbus
+
 import time
-import math
 
 import numpy as np
 import RPi.GPIO as GPIO
@@ -101,26 +99,6 @@ class Application(tk.Frame):
                 self.input_fields[focus_index].delete(len(current_text) - 1)
 
     def submit(self):
-        self.kalmanX = KalmanAngle()
-        self.kalmanY = KalmanAngle()
-
-        self.RestrictPitch = True	#Comment out to restrict roll to ±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
-        self.radToDeg = 57.2957786
-        self.kalAngleX = 0
-        self.kalAngleY = 0
-        #some MPU6050 Registers and their Address
-        PWR_MGMT_1   = 0x6B
-        SMPLRT_DIV   = 0x19
-        CONFIG       = 0x1A
-        GYRO_CONFIG  = 0x1B
-        INT_ENABLE   = 0x38
-        ACCEL_XOUT_H = 0x3B
-        ACCEL_YOUT_H = 0x3D
-        ACCEL_ZOUT_H = 0x3F
-        GYRO_XOUT_H  = 0x43
-        GYRO_YOUT_H  = 0x45
-        GYRO_ZOUT_H  = 0x47
-
         # create new window
         top = tk.Toplevel(self)
         top.title("Camera Feed")
@@ -137,8 +115,6 @@ class Application(tk.Frame):
         self.circle_thickness = -1  # Filled circle
         self.circle_position = [340, 240]  # Start at the center of the screen
 
-        self.keep_position = 0
-
         # Define line parameters
         self.y1 = 240 - 25 # 215
         self.y2 = 240 + 25 # 265
@@ -147,55 +123,12 @@ class Application(tk.Frame):
         x2 = int(x1 + line_width)
         self.multiplier = 0
 
-        def MPU_Init():
-            bus.write_byte_data(DeviceAddress, SMPLRT_DIV, 7)
-            bus.write_byte_data(DeviceAddress, PWR_MGMT_1, 1)
-            bus.write_byte_data(DeviceAddress, CONFIG, int('0000110',2))
-            bus.write_byte_data(DeviceAddress, GYRO_CONFIG, 24)
-            bus.write_byte_data(DeviceAddress, INT_ENABLE, 1)
-
-        def read_raw_data(addr):
-            high = bus.read_byte_data(DeviceAddress, addr)
-            low = bus.read_byte_data(DeviceAddress, addr+1)
-            value = ((high << 8) | low)
-            if(value > 32768):
-                    value = value - 65536
-            return value
-
-        bus = smbus.SMBus(1) 	# or bus = smbus.SMBus(0) for older version boards
-        DeviceAddress = 0x68   # MPU6050 device address
-        MPU_Init()
-
-        time.sleep(1)
-        #Read Accelerometer raw value
-        accX = read_raw_data(ACCEL_XOUT_H)
-        accY = read_raw_data(ACCEL_YOUT_H)
-        accZ = read_raw_data(ACCEL_ZOUT_H)
-
-        self.timer = time.time()
-        self.flag = 0
-
-        #print(accX,accY,accZ)
-        #print(math.sqrt((accY**2)+(accZ**2)))
-        if (self.RestrictPitch):
-            roll = math.atan2(accY,accZ) * self.radToDeg
-            pitch = math.atan(-accX/math.sqrt((accY**2)+(accZ**2))) * self.radToDeg
-        else:
-            roll = math.atan(accY/math.sqrt((accX**2)+(accZ**2))) * self.radToDeg
-            pitch = math.atan2(-accX,accZ) * self.radToDeg
-
-        print(roll)
-        self.kalmanX.setAngle(roll)
-        self.kalmanY.setAngle(pitch)
-        self.gyroXAngle = roll;
-        self.gyroYAngle = pitch;
-        self.compAngleX = roll;
-        self.compAngleY = pitch;
-
         def valueChanged(value, direction):
             if direction == "L":
                 self.y1 -= 2.5
                 self.y2 += 2.5
+                print("y1: ", self.y1)
+                print("y2: ", self.y2)
 
                 self.circle_position[0] -= random.randint(0, 10)
                 self.circle_position[0] = max(self.circle_position[0], 300)
@@ -204,6 +137,8 @@ class Application(tk.Frame):
             elif direction == "R":
                 self.y1 += 2.5
                 self.y2 -= 2.5
+                print("y1: ", self.y1)
+                print("y2: ", self.y2)
 
                 if self.y2 <= 250:
                     self.circle_position[0] += random.randint(0, 10)
@@ -221,71 +156,6 @@ class Application(tk.Frame):
         def update():
             ret, frame = cap.read()
             if ret:
-                #Read Accelerometer raw value
-                accX = read_raw_data(ACCEL_XOUT_H)
-                accY = read_raw_data(ACCEL_YOUT_H)
-                accZ = read_raw_data(ACCEL_ZOUT_H)
-
-                #Read Gyroscope raw value
-                gyroX = read_raw_data(GYRO_XOUT_H)
-                gyroY = read_raw_data(GYRO_YOUT_H)
-                gyroZ = read_raw_data(GYRO_ZOUT_H)
-
-                dt = time.time() - self.timer
-                timer = time.time()
-
-                if (self.RestrictPitch):
-                    roll = math.atan2(accY,accZ) * self.radToDeg
-                    pitch = math.atan(-accX/math.sqrt((accY**2)+(accZ**2))) * self.radToDeg
-                else:
-                    roll = math.atan(accY/math.sqrt((accX**2)+(accZ**2))) * self.radToDeg
-                    pitch = math.atan2(-accX,accZ) * self.radToDeg
-
-                gyroXRate = gyroX/131
-                gyroYRate = gyroY/131
-
-                if (self.RestrictPitch):
-                    if((roll < -90 and self.kalAngleX >90) or (roll > 90 and self.kalAngleX < -90)):
-                        self.kalmanX.setAngle(roll)
-                        complAngleX = roll
-                        self.kalAngleX   = roll
-                        self.gyroXAngle  = roll
-                    else:
-                        self.kalAngleX = self.kalmanX.getAngle(roll,gyroXRate,dt)
-
-                    if(abs(self.kalAngleX)>90):
-                        gyroYRate  = -gyroYRate
-                        self.kalAngleY  = self.kalmanY.getAngle(pitch,gyroYRate,dt)
-                else:
-
-                    if((pitch < -90 and self.kalAngleY >90) or (pitch > 90 and self.kalAngleY < -90)):
-                        self.kalmanY.setAngle(pitch)
-                        complAngleY = pitch
-                        self.kalAngleY   = pitch
-                        self.gyroYAngle  = pitch
-                    else:
-                        self.kalAngleY = self.kalmanY.getAngle(pitch,gyroYRate,dt)
-
-                    if(abs(self.kalAngleY)>90):
-                        gyroXRate  = -gyroXRate
-                        self.kalAngleX = self.kalmanX.getAngle(roll,gyroXRate,dt)
-
-                #angle = (rate of change of angle) * change in time
-                self.gyroXAngle = gyroXRate * dt
-                self.gyroYAngle = self.gyroYAngle * dt
-
-                #compAngle = constant * (old_compAngle + angle_obtained_from_gyro) + constant * angle_obtained from accelerometer
-                self.compAngleX = 0.93 * (self.compAngleX + gyroXRate * dt) + 0.07 * roll
-                self.compAngleY = 0.93 * (self.compAngleY + gyroYRate * dt) + 0.07 * pitch
-
-                if ((self.gyroXAngle < -180) or (self.gyroXAngle > 180)):
-                    self.gyroXAngle = self.kalAngleX
-                if ((self.gyroYAngle < -180) or (self.gyroYAngle > 180)):
-                    self.gyroYAngle = self.kalAngleY
-
-                #print("Angle X: " + str(self.kalAngleX)+"   " +"Angle Y: " + str(self.kalAngleY))
-                #print(str(roll)+"  "+str(self.gyroXAngle)+"  "+str(self.compAngleX)+"  "+str(self.kalAngleX)+"  "+str(pitch)+"  "+str(self.gyroYAngle)+"  "+str(self.compAngleY)+"  "+str(self.kalAngleY))
-
                 # Draw the circle
                 cv2.circle(frame, (self.circle_position[0], self.circle_position[1]), self.circle_radius, self.circle_color, self.circle_thickness)
 
@@ -293,16 +163,6 @@ class Application(tk.Frame):
                 self.circle_position[0] += random.randint(-2, 2)
                 self.circle_position[0] = max(self.circle_position[0], self.circle_radius)
                 self.circle_position[0] = min(self.circle_position[0], frame.shape[1] - self.circle_radius)
-
-                if(self.kalAngleX <= -110):
-                    self.circle_position[0] = 300
-
-                    if(self.circle_position[0] != 300):
-                        self.keep_position = self.circle_position[0]
-
-                elif(self.kalAngleX < -109 and self.kalAngleX > -111):
-                    self.circle_position[0] = self.keep_position
-
 
                 #self.circle_position[0] = self.circle_position self.multiplier
 
