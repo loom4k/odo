@@ -101,13 +101,13 @@ class Application(tk.Frame):
                 self.input_fields[focus_index].delete(len(current_text) - 1)
 
     def submit(self):
-        kalmanX = KalmanAngle()
-        kalmanY = KalmanAngle()
+        self.kalmanX = KalmanAngle()
+        self.kalmanY = KalmanAngle()
 
-        RestrictPitch = True	#Comment out to restrict roll to ±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
-        radToDeg = 57.2957786
-        kalAngleX = 0
-        kalAngleY = 0
+        self.RestrictPitch = True	#Comment out to restrict roll to ±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
+        self.radToDeg = 57.2957786
+        self.kalAngleX = 0
+        self.kalAngleY = 0
         #some MPU6050 Registers and their Address
         PWR_MGMT_1   = 0x6B
         SMPLRT_DIV   = 0x19
@@ -170,25 +170,25 @@ class Application(tk.Frame):
         accY = read_raw_data(ACCEL_YOUT_H)
         accZ = read_raw_data(ACCEL_ZOUT_H)
 
-        timer = time.time()
-        flag = 0
+        self.timer = time.time()
+        self.flag = 0
 
         #print(accX,accY,accZ)
         #print(math.sqrt((accY**2)+(accZ**2)))
-        if (RestrictPitch):
-            roll = math.atan2(accY,accZ) * radToDeg
-            pitch = math.atan(-accX/math.sqrt((accY**2)+(accZ**2))) * radToDeg
+        if (self.RestrictPitch):
+            roll = math.atan2(accY,accZ) * self.radToDeg
+            pitch = math.atan(-accX/math.sqrt((accY**2)+(accZ**2))) * self.radToDeg
         else:
-            roll = math.atan(accY/math.sqrt((accX**2)+(accZ**2))) * radToDeg
-            pitch = math.atan2(-accX,accZ) * radToDeg
+            roll = math.atan(accY/math.sqrt((accX**2)+(accZ**2))) * self.radToDeg
+            pitch = math.atan2(-accX,accZ) * self.radToDeg
 
         print(roll)
-        kalmanX.setAngle(roll)
-        kalmanY.setAngle(pitch)
-        gyroXAngle = roll;
-        gyroYAngle = pitch;
-        compAngleX = roll;
-        compAngleY = pitch;
+        self.kalmanX.setAngle(roll)
+        self.kalmanY.setAngle(pitch)
+        self.gyroXAngle = roll;
+        self.gyroYAngle = pitch;
+        self.compAngleX = roll;
+        self.compAngleY = pitch;
 
         def valueChanged(value, direction):
             if direction == "L":
@@ -229,61 +229,61 @@ class Application(tk.Frame):
                 gyroY = read_raw_data(GYRO_YOUT_H)
                 gyroZ = read_raw_data(GYRO_ZOUT_H)
 
-                dt = time.time() - timer
+                dt = time.time() - self.timer
                 timer = time.time()
 
-                if (RestrictPitch):
-                    roll = math.atan2(accY,accZ) * radToDeg
-                    pitch = math.atan(-accX/math.sqrt((accY**2)+(accZ**2))) * radToDeg
+                if (self.RestrictPitch):
+                    roll = math.atan2(accY,accZ) * self.radToDeg
+                    pitch = math.atan(-accX/math.sqrt((accY**2)+(accZ**2))) * self.radToDeg
                 else:
-                    roll = math.atan(accY/math.sqrt((accX**2)+(accZ**2))) * radToDeg
-                    pitch = math.atan2(-accX,accZ) * radToDeg
+                    roll = math.atan(accY/math.sqrt((accX**2)+(accZ**2))) * self.radToDeg
+                    pitch = math.atan2(-accX,accZ) * self.radToDeg
 
                 gyroXRate = gyroX/131
                 gyroYRate = gyroY/131
 
-                if (RestrictPitch):
+                if (self.RestrictPitch):
 
-                    if((roll < -90 and kalAngleX >90) or (roll > 90 and kalAngleX < -90)):
-                        kalmanX.setAngle(roll)
+                    if((roll < -90 and self.kalAngleX >90) or (roll > 90 and self.kalAngleX < -90)):
+                        self.kalmanX.setAngle(roll)
                         complAngleX = roll
-                        kalAngleX   = roll
-                        gyroXAngle  = roll
+                        self.kalAngleX   = roll
+                        self.gyroXAngle  = roll
                     else:
-                        kalAngleX = kalmanX.getAngle(roll,gyroXRate,dt)
+                        self.kalAngleX = self.kalmanX.getAngle(roll,gyroXRate,dt)
 
-                    if(abs(kalAngleX)>90):
+                    if(abs(self.kalAngleX)>90):
                         gyroYRate  = -gyroYRate
-                        kalAngleY  = kalmanY.getAngle(pitch,gyroYRate,dt)
+                        self.kalAngleY  = self.kalmanY.getAngle(pitch,gyroYRate,dt)
                 else:
 
-                    if((pitch < -90 and kalAngleY >90) or (pitch > 90 and kalAngleY < -90)):
-                        kalmanY.setAngle(pitch)
+                    if((pitch < -90 and self.kalAngleY >90) or (pitch > 90 and self.kalAngleY < -90)):
+                        self.kalmanY.setAngle(pitch)
                         complAngleY = pitch
-                        kalAngleY   = pitch
-                        gyroYAngle  = pitch
+                        self.kalAngleY   = pitch
+                        self.gyroYAngle  = pitch
                     else:
-                        kalAngleY = kalmanY.getAngle(pitch,gyroYRate,dt)
+                        self.kalAngleY = self.kalmanY.getAngle(pitch,gyroYRate,dt)
 
-                    if(abs(kalAngleY)>90):
+                    if(abs(self.kalAngleY)>90):
                         gyroXRate  = -gyroXRate
-                        kalAngleX = kalmanX.getAngle(roll,gyroXRate,dt)
+                        self.kalAngleX = self.kalmanX.getAngle(roll,gyroXRate,dt)
 
                 #angle = (rate of change of angle) * change in time
-                gyroXAngle = gyroXRate * dt
-                gyroYAngle = gyroYAngle * dt
+                self.gyroXAngle = gyroXRate * dt
+                self.gyroYAngle = self.gyroYAngle * dt
 
                 #compAngle = constant * (old_compAngle + angle_obtained_from_gyro) + constant * angle_obtained from accelerometer
-                compAngleX = 0.93 * (compAngleX + gyroXRate * dt) + 0.07 * roll
-                compAngleY = 0.93 * (compAngleY + gyroYRate * dt) + 0.07 * pitch
+                self.compAngleX = 0.93 * (self.compAngleX + gyroXRate * dt) + 0.07 * roll
+                self.compAngleY = 0.93 * (self.compAngleY + gyroYRate * dt) + 0.07 * pitch
 
-                if ((gyroXAngle < -180) or (gyroXAngle > 180)):
-                    gyroXAngle = kalAngleX
-                if ((gyroYAngle < -180) or (gyroYAngle > 180)):
-                    gyroYAngle = kalAngleY
+                if ((self.gyroXAngle < -180) or (self.gyroXAngle > 180)):
+                    self.gyroXAngle = self.kalAngleX
+                if ((self.gyroYAngle < -180) or (self.gyroYAngle > 180)):
+                    self.gyroYAngle = self.kalAngleY
 
-                print("Angle X: " + str(kalAngleX)+"   " +"Angle Y: " + str(kalAngleY))
-                #print(str(roll)+"  "+str(gyroXAngle)+"  "+str(compAngleX)+"  "+str(kalAngleX)+"  "+str(pitch)+"  "+str(gyroYAngle)+"  "+str(compAngleY)+"  "+str(kalAngleY))
+                print("Angle X: " + str(self.kalAngleX)+"   " +"Angle Y: " + str(self.kalAngleY))
+                #print(str(roll)+"  "+str(self.gyroXAngle)+"  "+str(self.compAngleX)+"  "+str(self.kalAngleX)+"  "+str(pitch)+"  "+str(self.gyroYAngle)+"  "+str(self.compAngleY)+"  "+str(self.kalAngleY))
                 time.sleep(0.005)
 
                 # Draw the circle
