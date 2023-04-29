@@ -169,13 +169,6 @@ class Application(tk.Frame):
         accX = read_raw_data(ACCEL_XOUT_H)
         accY = read_raw_data(ACCEL_YOUT_H)
         accZ = read_raw_data(ACCEL_ZOUT_H)
-        print(roll)
-        kalmanX.setAngle(roll)
-        kalmanY.setAngle(pitch)
-        gyroXAngle = roll;
-        gyroYAngle = pitch;
-        compAngleX = roll;
-        compAngleY = pitch;
 
         timer = time.time()
         flag = 0
@@ -188,6 +181,14 @@ class Application(tk.Frame):
         else:
             roll = math.atan(accY/math.sqrt((accX**2)+(accZ**2))) * radToDeg
             pitch = math.atan2(-accX,accZ) * radToDeg
+
+        print(roll)
+        kalmanX.setAngle(roll)
+        kalmanY.setAngle(pitch)
+        gyroXAngle = roll;
+        gyroYAngle = pitch;
+        compAngleX = roll;
+        compAngleY = pitch;
 
         def valueChanged(value, direction):
             if direction == "L":
